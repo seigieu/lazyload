@@ -20,10 +20,11 @@
 	use_native?: boolean;
 }
 interface ILazyLoad {
-	new (options?: ILazyLoadOptions, elements?: NodeListOf<HTMLElement>);
+	new (options?: ILazyLoadOptions, elements?: NodeListOf<HTMLElement>): ILazyLoad;
 	update: (elements?: NodeListOf<HTMLElement>) => void;
 	destroy: () => void;
 	load: (element: HTMLElement, force?: boolean) => void;
 	loadAll: () => void;
 }
 declare var LazyLoad: ILazyLoad;
+export default LazyLoad;

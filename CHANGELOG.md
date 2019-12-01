@@ -2,6 +2,54 @@
 
 ## Version 12
 
+#### 12.4.0
+
+Video `poster`s can now be loaded lazily, as requested in #365
+
+#### 12.3.0
+
+Callbacks now pass more arguments!
+
+`callback_enter`, `callback_exit` now pass:
+1. the DOM element that entered / exited the viewport
+2. the `IntersectionObserverEntry` that triggered the enter/exit event
+3. the LazyLoad instance
+
+`callback_load`, `callback_error`, `callback_reveal` now pass
+1. the DOM element that entered / exited the viewport
+2. the LazyLoad instance
+
+`callback_finish` now passes:
+1. the LazyLoad instance
+
+The README file has been updated accordingly.
+
+#### 12.2.0
+
+Released new feature "retry when back online". Now if your users lose the internet connection causing errors on images loading, this script tries and loads those images again when the connection is restored.
+
+#### 12.1.1
+
+Solved a bug with Internet Explorer 11 and the W3C polyfill, as reported in #383.
+
+#### 12.1.0
+
+- Updated npm dev dependencies
+- Added the new `image_ph_inline.html`, with an inline SVG placeholder
+- Added the new `image_ph_external.html`, with an external SVG placeholder
+ 
+#### 12.0.3
+
+Updated the IntersectionObserver polyfill to version 0.7.0
+
+#### 12.0.2
+
+Improved detection of browser support of IntersectionObserver, as suggested in #362. Thanks to @kaldonir
+
+#### 12.0.1
+
+Updated CHANGELOG.md and README.md to mention the change of the option name `callback_load` which is called `callback_loaded` in versions 11.0.0 and above.
+
 #### 12.0.0 
 
 - Reorganized code
@@ -58,6 +106,7 @@ version. If you were using it, please update your code to use `callback_reveal` 
 Callbacks updated:
 
 - **Changed** `callback_enter`. This callback is now called whenever an element enters the viewport, even when `load_delay` is set. In previous versions, this callback was delayed until an element started loading if a `load_delay` was set. Note that this is a **possible breaking change**, which you can fix using `callback_reveal` instead.
+- **Renamed** `callback_loaded` is the new name of `callback_load`.
 - **Added** `callback_exit`. This callback is called whenever an element exits the viewport, even if a `load_delay` is set.
 - **Added** `callback_reveal`. This callback is called just after an element starts loading.
 - **Deprecated** `callback_set`. This callback still works*, but will be removed in the next major 

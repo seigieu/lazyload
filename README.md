@@ -1,5 +1,9 @@
 LazyLoad is a fast, lightweight and flexible script that **speeds up your web application** by loading your content images, videos and iframes only **as they enter the viewport**. It's written in plain "vanilla" JavaScript, it leverages the [IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) API, it works with [responsive images](https://alistapart.com/article/responsive-images-in-practice) and it supports native lazy loading. See [notable features](#-notable-features) for more.
 
+[![vanilla-lazyload (latest)](https://img.shields.io/npm/v/vanilla-lazyload/latest.svg)](https://www.npmjs.com/package/vanilla-lazyload)
+[![vanilla-lazyload (downloads)](http://img.shields.io/npm/dy/vanilla-lazyload.svg)](https://www.npmjs.com/package/vanilla-lazyload)
+[![](https://data.jsdelivr.com/v1/package/npm/vanilla-lazyload/badge)](https://www.jsdelivr.com/package/npm/vanilla-lazyload)
+
 ➡️ Jump to: [👨‍💻 Getting started - HTML](#-getting-started---html) - [👩‍💻 Getting started - Script](#-getting-started---script) - [🥧 Recipes](#-recipes) - [📺 Demos](#-demos) - [😋 Tips & tricks](#-tips--tricks) - [🔌 API](#-api) - [😯 Notable features](#-notable-features)
 
 ---
@@ -90,22 +94,24 @@ Notes:
 
 ```html
 <video class="lazy" controls width="620"
-    data-src="lazy.mp4" poster="lazy.jpg">
+    data-src="lazy.mp4" data-poster="lazy.jpg">
     <source type="video/mp4" data-src="lazy.mp4">
     <source type="video/ogg" data-src="lazy.ogg">
     <source type="video/avi" data-src="lazy.avi">
 </video>
 ```
 
+Please note that the video poster can be lazily loaded too.
+
 #### Lazy iframe
 
 ```html
-<iframe class="lazy" data-src="lazyFrame.html" poster="lazy.jpg"></iframe>
+<iframe class="lazy" data-src="lazyFrame.html"></iframe>
 ```
 
 ## 👩‍💻 Getting started - Script
 
-The latest, recommended version of LazyLoad is **12.0.0**.
+The latest, recommended version of LazyLoad is **12.4.0**.
 
 ### To polyfill or not to polyfill IntersectionObserver?
 
@@ -120,14 +126,14 @@ If you prefer to load a polyfill, the regular LazyLoad behaviour is granted.
 The easiest way to use LazyLoad is to include the script from a CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>
 ```
 
 Or, with the IntersectionObserver polyfill:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.5.1/intersection-observer.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intersection-observer@0.7.0/intersection-observer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>
 ```
 
 Then, in your javascript code:
@@ -142,9 +148,7 @@ var lazyLoadInstance = new LazyLoad({
 To be sure that DOM for your lazy content is ready when you instantiate LazyLoad, **place the script tag right before the closing `</body>` tag**. If more DOM arrives later, e.g. via an AJAX call, you'll need to call `lazyLoadInstance.update();` to make LazyLoad check the DOM again.
 
 ```js
-if (lazyLoadInstance) {
-    lazyLoadInstance.update();
-}
+lazyLoadInstance.update();
 ```
 
 ### Include via RequireJS
@@ -162,8 +166,8 @@ Include RequireJS:
 Then `require` the AMD version of LazyLoad, like this:
 
 ```js
-var lazyLoadAmdUrl = "https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.amd.min.js";
-var polyfillAmdUrl = "https://cdn.jsdelivr.net/npm/intersection-observer-amd@2.0.1/intersection-observer-amd.js";
+var lazyLoadAmdUrl = "https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.amd.min.js";
+var polyfillAmdUrl = "https://cdn.jsdelivr.net/npm/intersection-observer-amd@2.1.0/intersection-observer-amd.js";
 
 /// Dynamically define the dependencies
 var dependencies = [
@@ -207,7 +211,7 @@ To do so, **you must define the options before including the script**. You can p
 Then include the script.
 
 ```html	
-<script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.min.js"></script>	
+<script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>	
 ```
 
 **Possibly place the script tag right before the closing `</body>` tag**. If you can't do that, LazyLoad could be executed before the browser has loaded all the DOM, and you'll need to call its `update()` method to make it check the DOM again.
@@ -233,15 +237,13 @@ Same as above, but you must put the `addEventListener` code shown below before i
 Then include the script.
 
 ```html	
-<script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.0.0/dist/lazyload.min.js"></script>	
+<script async src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@12.4.0/dist/lazyload.min.js"></script>	
 ```
 
 Now you'll be able to call its methods, like:
 
 ```js
-if (lazyLoadInstance) {
-    lazyLoadInstance.update();
-}
+lazyLoadInstance.update();
 ```
 
 Note about Internet Explorer: because this technique uses a `CustomEvent` ([learn more](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent)) to trigger the `LazyLoad::Initialized` event, you might want to add this micro polyfill to make it work on Internet Explorer.
@@ -466,7 +468,9 @@ The [demos](https://github.com/verlok/lazyload/tree/master/demos) folder contain
 
 | Type      | Title                                                                                          | Code                                           | Live demo                                                                              |
 | --------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------- |
-| Content   | Simple lazy loaded image                                                                       | [Code](demos/image_simple.html)                | [Live](https://www.andreaverlicchi.eu/lazyload/demos/image_simple.html)                |
+| Content   | Simple lazy loaded images, not using any placeholder                                           | [Code](demos/image_basic.html)                 | [Live](https://www.andreaverlicchi.eu/lazyload/demos/image_basic.html)                 |
+| Content   | Lazy images that use an inline SVG as a placeholder                                            | [Code](demos/image_ph_inline.html)             | [Live](https://www.andreaverlicchi.eu/lazyload/demos/image_ph_inline.html)             |
+| Content   | Lazy images that use an external SVG file as a placeholder                                     | [Code](demos/image_ph_external.html)           | [Live](https://www.andreaverlicchi.eu/lazyload/demos/image_ph_external.html)           |
 | Content   | Lazy responsive images with `srcset`                                                           | [Code](demos/image_srcset.html)                | [Live](https://www.andreaverlicchi.eu/lazyload/demos/image_srcset.html)                |
 | Content   | Lazy responsive images with the `<picture>` tag and the `media` attribute (art direction)      | [Code](demos/picture_media.html)               | [Live](https://www.andreaverlicchi.eu/lazyload/demos/picture_media.html)               |
 | Content   | Lazy responsive images with `srcset` and `sizes` (using `data-sizes`)                          | [Code](demos/image_srcset_lazy_sizes.html)     | [Live](https://www.andreaverlicchi.eu/lazyload/demos/image_srcset_lazy_sizes.html)     |
@@ -501,95 +505,56 @@ The [demos](https://github.com/verlok/lazyload/tree/master/demos) folder contain
 
 ## 😋 Tips & tricks
 
-### Occupy vertical space and maintain ratio
+### Occupy space and avoid content reflow
 
-You need to be sure that the containers of the images that are going to be lazy loaded **occupy some vertical space**. This because if the images have an initial height of `0`, all of them will probably be inside the viewport before time, so they will be loaded all at once.
+It's a good idea to make sure that your lazy images occupy some space even **before they are loaded**, otherwise the `img` elements will be shrinked to zero-height, causing your layout to reflow and making lazyload inefficient.
 
-In an elastic layout where images width change, you want to keep vertical space maintaining the images height, using a width/height ratio calculation.
+There are [many ways to avoid content reflow](https://css-tricks.com/preventing-content-reflow-from-lazy-loaded-images/). I've [tested three of them](https://github.com/verlok/lazyload_placeholders_test) and found that the fastest is to **avoid using a placeholder at all**, and use the vertical padding trick. 
+
+#### Vertical padding trick
+
+```html
+<div class="image-wrapper">
+    <img class="lazy image" alt="An image" data-src="lazy.jpg">
+</div>
+```
 
 ```css
 .image-wrapper {
     width: 100%;
     height: 0;
-    padding-bottom: 66.67%; /* You define this doing height / width * 100% */
+    padding-bottom: 150%; /* You define this doing image height / width * 100% */
     position: relative;
 }
 .image {
     width: 100%;
-    /*height: auto;*/
+    height: auto;
     position: absolute;
 }
 ```
 
-More info in [Sizing Fluid Image Containers with a Little CSS Padding Hack](http://andyshora.com/css-image-container-padding-hack.html) by Andy Shora.
+More info in [Sizing Fluid Image Containers with a Little CSS Padding Hack](http://andyshora.com/css-image-container-padding-hack.html) by Andy Shora. Find also a useful [SASS mixin to maintain aspect ratio](https://css-tricks.com/snippets/sass/maintain-aspect-ratio-mixin/) on CSS tricks.
 
-There's also a **useful SASS mixin** to [maintain aspect ratio](https://css-tricks.com/snippets/sass/maintain-aspect-ratio-mixin/) on CSS tricks.
 
-```scss
-@mixin aspect-ratio($width, $height) {
-  position: relative;
-  &:before {
-    display: block;
-    content: "";
-    width: 100%;
-    padding-top: ($height / $width) * 100%;
-  }
-  > .content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-}
+#### Inline SVG
+
+If you can't use the vertical padding trick for some reason, the best option is to use an SVG placeholder of the same ratio of the lazy images.
+
+```html
+<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 3 2'%3E%3C/svg%3E" 
+    data-src="//picsum.photos/900/600" 
+    alt="Lazy loading test image" />
 ```
 
-### Show the images *while* they load
+Alternatively (but less efficiently) you can use a tiny, scaled-down version of your images as a placeholder, stretching them to the final size of the images, and obtain a blur-up effect when the full images load.
 
-Images should be shown while they load, and not after, to give your users the best perceived performance. This is especially true if you use a progressive loading format like **Progressive JPEG**.
-
-In order to make your images visible as soon as LazyLoad sets the `src`/`srcset` attribute to it, you can either:
-
-Do it like that via CSS:
-
-```css
-/* Prevents img without src to appear */
-img:not([src]) {
-    visibility: hidden;
-}
-```
-
-Or instead of the above `:not()` selector do it using the **CSS classes** of `class_loading` and `class_loaded` set by LazyLoad when loading starts or is completed - see [API](#-api).
-
-
-### Do NOT use placeholder images
-
-We do not recommend to use a placeholder image (like a transparent pixel GIF) in your HTML. 
-
-* For **best perceived performance, leave the `src` and `srcset` attributes blank**. Doing so, the image will be shown as soon as LazyLoad starts loading the image. See [this video](https://youtu.be/2E3ociaFJS0) or [this pen](https://codepen.io/verlok/pen/bKYggE?editors=0110) to test the difference (remember to disable the cache and to set a slower connection speed if you have a very fast one).
-* If you put anything in the src (like a transparent GIF), then LazyLoad starts loading the image but it won't be shown by browsers until the new image is loaded, leading to a **worse perceived performance**.
-
-It's safe not to put any value in the `src` nor `srcset` attributes, even if your HTML won't validate by a static code analyzer. The reason is that once JavaScript is executed, those values will be set by LazyLoad. For SEO, if the client is a crawler like Googlebot, it will be detected by LazyLoad which will fix the HTML.
+Using a placeholder image will also make sure that browsers don't show your `alt` content instead of the images before the lazy-loading starts.
 
 <!--
 MOAR points to add to the README:
 
 * When your images source change before or after they was lazily loaded - and you want to lazy load the change too. See issue #84 (closed)
 -->
-
-### Dealing with Microsoft Edge problems
-
-According to what reported in #152, for Microsoft Edge to fire the IntersectionObserver for an `img` element, it must have a size. Since `img`s are displayed `inline-block` as standard, MS Edge (version not specified) doesn't read them correctly.
-
-By setting the following, Edge is able to see the images and they get loaded.
-
-```css
-img[data-src],
-img[data-srcset] {
-  display: block;
-  min-height: 1px;
-}
-```
 
 ---
 
@@ -632,22 +597,23 @@ Here's the list of the options.
 | `elements_selector` | The CSS selector of the elements to load lazily, which will be selected as descendants of the `container` object.                                                                                                                                                                                                                                                                                                                                            | `"img"`       | `".images img.lazy"`                     |
 | `threshold`         | A number of pixels representing the outer distance off the scrolling area from which to start loading the elements.                                                                                                                                                                                                                                                                                                                                          | `300`         | `0`                                      |
 | `thresholds`        | Similar to `threshold`, but accepting multiple values and both `px` and `%` units. It maps directly to the `rootMargin` property of IntersectionObserver ([read more](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/rootMargin)), so it must be a string with a syntax similar to the CSS `margin` property. You can use it when you need to have different thresholds for the scrolling area. It overrides `threshold` when passed. | `null`        | `"500px 10%"`                            |
-| `data_src`          | The name of the data attribute containing the original image source, excluding the `"data-"` part. E.g. if your data attribute is named `"data-src"`, just pass `"src"`                                                                                                                                                                                                                                                                                      | `"src"`       | `"original"`                             |
-| `data_srcset`       | The name of the data attribute containing the original image source set in either `img` and `source` tags, excluding the `"data-"` part. E.g. if your data attribute is named `"data-srcset"`, just pass `"srcset"`                                                                                                                                                                                                                                          | `"srcset"`    | `"original-set"`                         |
-| `data_sizes`        | The name of the data attribute containing the sizes attribute to use, excluding the `"data-"` part. E.g. if your data attribute is named `"data-sizes"`, just pass `"sizes"`                                                                                                                                                                                                                                                                                 | `"sizes"`     | `null`                                   |
-| `data_bg`           | The name of the data attribute containing the value of `background-image` to load lazily, excluding the `"data-"` part. E.g. if your data attribute is named `"data-bg"`, just pass `"bg"`. The attribute value must be a valid value for `background-image`, including the `url()` part of the CSS instruction.                                                                                                                                             | `"bg"`        | `"url(img1.jpg), url(img2.jpg)"`         |
+| `data_src`          | The name of the data attribute containing the original image source, excluding the `"data-"` part. E.g. if your data attribute is named `"data-src"`, just pass `"src"`                                                                                                                                                                                                                                                                                      | `"src"`       | `"lazy-src"`                             |
+| `data_srcset`       | The name of the data attribute containing the original image source set in either `img` and `source` tags, excluding the `"data-"` part. E.g. if your data attribute is named `"data-srcset"`, just pass `"srcset"`                                                                                                                                                                                                                                          | `"srcset"`    | `"lazy-srcset"`                          |
+| `data_sizes`        | The name of the data attribute containing the sizes attribute to use, excluding the `"data-"` part. E.g. if your data attribute is named `"data-sizes"`, just pass `"sizes"`                                                                                                                                                                                                                                                                                 | `"sizes"`     | `"lazy-sizes"`                           |
+| `data_bg`           | The name of the data attribute containing the value of `background-image` to load lazily, excluding the `"data-"` part. E.g. if your data attribute is named `"data-bg"`, just pass `"bg"`. The attribute value must be a valid value for `background-image`, including the `url()` part of the CSS instruction.                                                                                                                                             | `"bg"`        | `"lazy-bg"`                              |
+| `data_poster`       | The name of the data attribute containing the value of `poster` to load lazily, excluding the `"data-"` part. E.g. if your data attribute is named `"data-poster"`, just pass `"poster"`.                                                                                                                                                                                                                                                                    | `"poster"`    | `"lazy-poster"`                          |
 | `class_loading`     | The class applied to the elements while the loading is in progress.                                                                                                                                                                                                                                                                                                                                                                                          | `"loading"`   | `"lazy-loading"`                         |
 | `class_loaded`      | The class applied to the elements when the loading is complete.                                                                                                                                                                                                                                                                                                                                                                                              | `"loaded"`    | `"lazy-loaded"`                          |
 | `class_error`       | The class applied to the elements when the element causes an error.                                                                                                                                                                                                                                                                                                                                                                                          | `"error"`     | `"lazy-error"`                           |
 | `load_delay`        | The time (in milliseconds) each image needs to stay inside the viewport before its loading begins.                                                                                                                                                                                                                                                                                                                                                           | `0`           | `300`                                    |
 | `auto_unobserve`    | A boolean that defines whether or not to automatically unobserve elements that was already revealed                                                                                                                                                                                                                                                                                                                                                          | `true`        | `false`                                  |
-| `callback_enter`    | A callback function which is called whenever an element enters the viewport.                                                                                                                                                                                                                                                                                                                                                                                 | `null`        | `(el)=>{console.log("Entered", el)}`     |
-| `callback_exit`     | A callback function which is called whenever an element exits the viewport.                                                                                                                                                                                                                                                                                                                                                                                  | `null`        | `(el)=>{console.log("Exited", el)}`      |
-| `callback_reveal`   | A callback function which is called whenever an element starts loading.                                                                                                                                                                                                                                                                                                                                                                                      | `null`        | `(el)=>{console.log("Loading", el)}`     |
+| `callback_enter`    | A callback function which is called whenever an element enters the viewport. Arguments: DOM element, intersection observer entry, lazyload instance.                                                                                                                                                                                                                                                                                                         | `null`        | `(el)=>{console.log("Entered", el)}`     |
+| `callback_exit`     | A callback function which is called whenever an element exits the viewport. Arguments: DOM element, intersection observer entry, lazyload instance.                                                                                                                                                                                                                                                                                                          | `null`        | `(el)=>{console.log("Exited", el)}`      |
+| `callback_reveal`   | A callback function which is called whenever an element starts loading. Arguments: DOM element, lazyload instance.                                                                                                                                                                                                                                                                                                                                           | `null`        | `(el)=>{console.log("Loading", el)}`     |
 | `callback_set`      | **Deprecated from version 11** &rarr; It still works, but please update your code to use `callback_reveal` instead.                                                                                                                                                                                                                                                                                                                                          | `null`        | `(el)=>{console.log("Loading", el)}`     |
-| `callback_loaded`   | A callback function which is called whenever an element finishes loading.                                                                                                                                                                                                                                                                                                                                                                                    | `null`        | `(el)=>{console.log("Loaded", el)}`      |
-| `callback_error`    | A callback function which is called whenever an element triggers an error.                                                                                                                                                                                                                                                                                                                                                                                   | `null`        | `(el)=>{console.log("Error", el)}`       |
-| `callback_finish`   | A callback function which is called when there are no more elements to load _and_ all elements have been downloaded.                                                                                                                                                                                                                                                                                                                                         | `null`        | `()=>{console.log("Finish")}`            |
+| `callback_loaded`   | A callback function which is called whenever an element finishes loading. Note that, in version older than 11.0.0, this option went under the name `callback_load`. Arguments: DOM element, lazyload instance.                                                                                                                                                                                                                                               | `null`        | `(el)=>{console.log("Loaded", el)}`      |
+| `callback_error`    | A callback function which is called whenever an element triggers an error. Arguments: DOM element, lazyload instance.                                                                                                                                                                                                                                                                                                                                        | `null`        | `(el)=>{console.log("Error", el)}`       |
+| `callback_finish`   | A callback function which is called when there are no more elements to load _and_ all elements have been downloaded. Arguments: lazyload instance.                                                                                                                                                                                                                                                                                                           | `null`        | `()=>{console.log("Finish")}`            |
 | `use_native`        | This boolean sets whether or not to use [native lazy loading](https://addyosmani.com/blog/lazy-loading/). On browsers that supports it, LazyLoad will set the `loading="lazy"` attribute on images and iframes, and delegate their loading to the browser.                                                                                                                                                                                                   | `false`       | `true`                                   |
 
 ### Methods
@@ -680,6 +646,10 @@ _LazyLoad_ supports responsive images, both via the `srcset` & `sizes` attribute
 ### SEO friendly
 
 LazyLoad **doesn't hide your images from search engines**, even if you don't specify any initial `src` for your image.
+
+### Flaky connections supported
+
+Starting from version 12.2, if your users lose the internet connection causing errors on images loading, this script tries and loads those images again when the connection is restored.
 
 ### Tested on real browsers
 
